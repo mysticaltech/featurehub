@@ -1,5 +1,7 @@
 package io.featurehub.client;
 
+import io.featurehub.sse.model.FeatureValueType;
+
 import java.math.BigDecimal;
 
 public interface FeatureStateHolder {
@@ -16,6 +18,8 @@ public interface FeatureStateHolder {
   <T> T getJson(Class<T> type);
 
   boolean isSet();
+
+  FeatureValueType getType();
 
   void addListener(FeatureListener listener);
 }

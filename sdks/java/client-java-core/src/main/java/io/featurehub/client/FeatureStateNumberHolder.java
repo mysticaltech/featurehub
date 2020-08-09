@@ -41,6 +41,11 @@ public class FeatureStateNumberHolder extends FeatureStateBaseHolder {
   }
 
   @Override
+  public String toString() {
+    return value == null ? null : value.toString();
+  }
+
+  @Override
   public boolean isSet() {
     return getNumber() != null;
   }

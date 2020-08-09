@@ -1,6 +1,7 @@
 package io.featurehub.client;
 
 import io.featurehub.sse.model.FeatureState;
+import io.featurehub.sse.model.FeatureValueType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,6 +41,16 @@ abstract class FeatureStateBaseHolder implements FeatureStateHolder {
     listeners.forEach((sl) -> {
       executor.execute(() -> sl.notify(this));
     });
+  }
+
+  @Override
+  public FeatureValueType getType() {
+    return featureState == null ? null : featureState.getType();
+  }
+
+  @Override
+  public String toString() {
+    return null;
   }
 
   @Override

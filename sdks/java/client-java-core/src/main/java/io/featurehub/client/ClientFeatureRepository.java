@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,6 +54,11 @@ public class ClientFeatureRepository implements FeatureRepository {
     featureValueInterceptors.add(new FeatureValueInterceptorHolder(allowFeatureOverride, interceptor));
 
     return this;
+  }
+
+  @Override
+  public Iterable<FeatureStateHolder> features() {
+    return new ArrayList<>(features.values());
   }
 
   @Override

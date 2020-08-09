@@ -44,6 +44,11 @@ class FeatureStateJsonHolder extends FeatureStateBaseHolder {
   }
 
   @Override
+  public String toString() {
+    return value;
+  }
+
+  @Override
   public <T> T getJson(Class<T> type) {
     try {
       return value == null ? null : mapper.readValue(value, type);

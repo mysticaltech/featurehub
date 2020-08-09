@@ -1,9 +1,8 @@
 package io.featurehub.client.interceptor;
 
 import io.featurehub.client.FeatureValueInterceptor;
-import io.grpc.Context;
-
-import javax.inject.Inject;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.correlationcontext.Entry;
 
 /**
  * OpenTelemetry is different in that it uses the gRPC Context object to store
@@ -12,14 +11,15 @@ import javax.inject.Inject;
 public class OpenTelemetryValueInterceptor implements FeatureValueInterceptor {
   public static final String FEATUREHUB_FEATURE_CONTEXT_PREFIX = "fhub.";
 
-  @Inject
-  public OpenTelemetryValueInterceptor() {
-  }
-
   @Override
   public ValueMatch getValue(String key) {
-    final Context.Key<String> val = Context.key(FEATUREHUB_FEATURE_CONTEXT_PREFIX + key.replace(":",
-      "_"));
+    String finalKey = FEATUREHUB_FEATURE_CONTEXT_PREFIX + key.replace(":",
+      "_");
+    for(Entry entry : OpenTelemetry.getCorrelationContextManager().getCurrentContext().getEntries()) {
+      if (entry.getKey().equals(finalKey)) {
+        return new ValueMatch(true, entry.getValue());
+      }
+    }
 
     return null;
   }

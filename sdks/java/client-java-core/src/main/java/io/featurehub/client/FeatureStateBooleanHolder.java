@@ -40,6 +40,11 @@ public class FeatureStateBooleanHolder extends FeatureStateBaseHolder {
   }
 
   @Override
+  public String toString() {
+    return value.toString();
+  }
+
+  @Override
   public boolean isSet() {
     return getBoolean() != null;
   }

@@ -3,6 +3,7 @@ package io.featurehub.client;
 import io.featurehub.sse.model.FeatureState;
 import io.featurehub.sse.model.SSEResultState;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -73,4 +74,11 @@ public interface FeatureRepository {
    * @return the instance of the repo for chaining
    */
   FeatureRepository registerValueInterceptor(boolean allowLockOverride, FeatureValueInterceptor interceptor);
+
+  /**
+   * Allows iterating over all of the features.
+   *
+   * @return A list of all of the features in their current states.
+   */
+  Iterable<FeatureStateHolder> features();
 }
