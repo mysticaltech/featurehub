@@ -8,10 +8,11 @@ import 'tabs_bloc.dart';
 class EnvironmentsAndFeatureValuesListView extends StatelessWidget {
   const EnvironmentsAndFeatureValuesListView({
     Key key,
-    @required this.bloc,
+    @required this.bloc, this.scrollController,
   }) : super(key: key);
 
   final FeaturesOnThisTabTrackerBloc bloc;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class EnvironmentsAndFeatureValuesListView extends StatelessWidget {
                   child: Scrollbar(
                     child: ListView(
                       scrollDirection: Axis.horizontal,
+                      controller: scrollController,
                       physics: ClampingScrollPhysics(),
                       children: [
                         if (bloc.features.isNotEmpty)

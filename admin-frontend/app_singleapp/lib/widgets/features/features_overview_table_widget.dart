@@ -99,7 +99,50 @@ class TabsView extends StatelessWidget {
   }
 }
 
-class _FeatureTabsBodyHolder extends StatelessWidget {
+class _FeatureTabsBodyHolder extends StatefulWidget {
+  @override
+  __FeatureTabsBodyHolderState createState() => __FeatureTabsBodyHolderState();
+}
+
+class __FeatureTabsBodyHolderState extends State<_FeatureTabsBodyHolder> {
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+    super.initState();
+  }
+
+  _scrollListener() {
+        if(_scrollController.hasClients) {
+      print('max scroll is not 0');
+      setState(() {
+        _canScroll = true;
+      });
+
+    }
+  }
+
+  bool _canScroll = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  _moveUp() {
+    _scrollController.animateTo(_scrollController.offset - cellWidth,
+        curve: Curves.linear, duration: Duration(milliseconds: 500));
+  }
+
+  _moveDown() {
+    _scrollController.animateTo(_scrollController.offset + cellWidth,
+        curve: Curves.linear, duration: Duration(milliseconds: 500));
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<FeaturesOnThisTabTrackerBloc>(context);
@@ -126,8 +169,30 @@ class _FeatureTabsBodyHolder extends StatelessWidget {
                                 ? 260.0
                                 : 180,
                             padding: EdgeInsets.only(left: 8.0),
-                            child: Text('',
-                                style: Theme.of(context).textTheme.caption)),
+                            child:
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Material(
+                                  type: MaterialType.transparency,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      _canScroll ? _moveUp() : null;
+                                    },
+                                    icon: Icon(Icons.chevron_left),
+                                  ),
+                                ),
+                                Material(
+                                  type: MaterialType.transparency,
+                                  child: IconButton(
+                                    disabledColor: Colors.red,
+                                    onPressed: () => _canScroll ? _moveDown() : null,
+                                    icon: Icon(Icons.chevron_right),
+                                  ),
+                                )
+                              ],
+                            ),
+                        ),
                         ...bloc.features.map(
                           (f) {
                             return FeatureNamesLeftPanel(
@@ -139,7 +204,10 @@ class _FeatureTabsBodyHolder extends StatelessWidget {
           ),
         ),
         Flexible(
-          child: EnvironmentsAndFeatureValuesListView(bloc: bloc),
+          child: NotificationListener<ScrollUpdateNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                return true;
+              },child: EnvironmentsAndFeatureValuesListView(bloc: bloc, scrollController: _scrollController)),
         )
       ],
     );
