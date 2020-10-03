@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app_singleapp/utils/utils.dart';
 import 'package:app_singleapp/widgets/common/fh_flat_button_transparent.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FHJsonEditorWidget extends StatefulWidget {
@@ -42,7 +43,7 @@ class _FHJsonEditorState extends State<FHJsonEditorWidget> {
           Expanded(
             child: Form(
               key: _formKey,
-              autovalidate: true,
+              autovalidateMode: AutovalidateMode.always,
               child: Container(
                 width: 600,
                 padding: EdgeInsets.all(10),
