@@ -14,7 +14,7 @@ import 'package:logging/logging.dart';
 import 'package:mrapi/api.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:universal_html/html.dart';
+// import 'package:universal_html/html.dart';
 
 ///
 /// This represents the state of the whole application, which starts off in 'unknown',
@@ -225,22 +225,22 @@ class ManagementRepositoryClientBloc implements Bloc {
   static Uri originUri;
 
   static String homeUrl() {
-    final origin = window.location.origin;
-    originUri = Uri.parse(window.location.origin);
-    if (overrideOrigin) {
-      return '${originUri.scheme}://${originUri.host}:8903';
-    } else if (overrideOrigin && origin.startsWith('http://[::1]')) {
-      return 'http://[::1]:8903';
-    } else {
-      final url = Uri.parse(origin);
-      return url.replace(path: url.path).toString();
-    }
+    // final origin = window.location.origin;
+    // originUri = Uri.parse(window.location.origin);
+    // if (overrideOrigin) {
+    //   return '${originUri.scheme}://${originUri.host}:8903';
+    // } else if (overrideOrigin && origin.startsWith('http://[::1]')) {
+    //   return 'http://[::1]:8903';
+    // } else {
+    //   final url = Uri.parse(origin);
+    //   return url.replace(path: url.path).toString();
+    // }
   }
 
   ManagementRepositoryClientBloc({String basePathUrl})
       : _client = ApiClient(basePath: 'http://localhost:8903') {
     _basePath = Uri.parse(_client.basePath);
-     originUri = Uri.parse('http://localhost:8903');
+    originUri = Uri.parse('http://localhost:8903');
     setupApi = SetupServiceApi(_client);
     personServiceApi = PersonServiceApi(_client);
 
@@ -296,7 +296,7 @@ class ManagementRepositoryClientBloc implements Bloc {
         requestOwnDetails();
       } else if (setupResponse.redirectUrl != null) {
         // they can only authenticate via one provider, so lets use them
-        window.location.href = setupResponse.redirectUrl;
+        // window.location.href = setupResponse.redirectUrl;
       } else {
         _initializedSource.add(InitializedCheckState.initialized);
       }
@@ -318,24 +318,24 @@ class ManagementRepositoryClientBloc implements Bloc {
   static const bearerToken = 'bearer-token';
 
   String getBearerCookie() {
-    final cookies = document.cookie.split(';')
-      ..retainWhere((s) => s.trim().startsWith('$bearerToken='));
-
-    if (cookies.isNotEmpty) {
-      return cookies.first.trim().substring('$bearerToken='.length);
-    }
+    // final cookies = document.cookie.split(';')
+    //   ..retainWhere((s) => s.trim().startsWith('$bearerToken='));
+    //
+    // if (cookies.isNotEmpty) {
+    //   return cookies.first.trim().substring('$bearerToken='.length);
+    // }
 
     return null;
   }
 
   void _setBearerCookie(String token) {
-    document.cookie = '$bearerToken=$token; path=/';
+    // document.cookie = '$bearerToken=$token; path=/';
   }
 
   void _clearBearerCookie() {
     // expires back in 1970
-    document.cookie =
-        '$bearerToken=Da; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+    // document.cookie =
+    //     '$bearerToken=Da; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
   }
 
   // ask for my own details and if there are some, set the person and transition
@@ -448,8 +448,9 @@ class ManagementRepositoryClientBloc implements Bloc {
   }
 
   void consoleError(e, s) {
-    window.console.error(e?.toString());
-    window.console.error(s?.toString());
+    _log.severe('Failed ', e, s);
+    // window.console.error(e?.toString());
+    // window.console.error(s?.toString());
   }
 
   Future<void> login(String email, String password) async {

@@ -15,11 +15,10 @@ class DrawerViewWidget extends StatefulWidget {
 }
 
 class _DrawerViewWidgetState extends State<DrawerViewWidget> {
-
   @override
   Widget build(BuildContext context) {
     final mrBloc = BlocProvider.of<ManagementRepositoryClientBloc>(context);
-    if (MediaQuery.of(context).size.width < 600) {
+    if (MediaQuery.of(context).size.width < 600.0) {
       mrBloc.menuOpened.add(false);
     } else {
       mrBloc.menuOpened.add(true);
@@ -43,13 +42,12 @@ class _DrawerViewWidgetState extends State<DrawerViewWidget> {
 class _MenuContainer extends StatelessWidget {
   final ManagementRepositoryClientBloc mrBloc;
 
-  const _MenuContainer({Key key, this.mrBloc})
-      : super(key: key);
+  const _MenuContainer({Key key, this.mrBloc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 260,
+      width: 260.0,
       height: MediaQuery.of(context).size.height - kToolbarHeight,
       child: Drawer(
         child: SingleChildScrollView(
@@ -58,7 +56,7 @@ class _MenuContainer extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               PortfolioSelectorWidget(),
-              SizedBox(height: 16),
+              SizedBox(height: 16.0),
               _MenuFeaturesOptionsWidget(),
               StreamBuilder<ReleasedPortfolio>(
                   stream: mrBloc.personState.isCurrentPortfolioOrSuperAdmin,
@@ -234,21 +232,21 @@ class _MenuFeaturesOptionsWidget extends StatelessWidget {
         _MenuItem(
           name: 'Applications',
           iconData: Feather.grid,
-          iconSize: 24,
+          iconSize: 24.0,
           path: '/applications',
           params: {},
         ),
         _MenuItem(
           name: 'Features',
           iconData: Feather.flag,
-          iconSize: 24,
+          iconSize: 24.0,
           path: '/feature-status',
           params: {},
         ),
         _MenuItem(
           name: 'Service Accounts',
           iconData: AntDesign.key,
-          iconSize: 24,
+          iconSize: 24.0,
           path: '/service-envs',
           params: {},
         )
@@ -287,59 +285,65 @@ class _MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = BlocProvider.of<ManagementRepositoryClientBloc>(context);
-    final menuOkForThisUser = (bloc.userIsCurrentPortfolioAdmin ||
-        permissionType == PermissionType.regular);
-    return InkWell(
-      canRequestFocus: false,
-      mouseCursor: SystemMouseCursors.click,
-      hoverColor: Theme.of(context).selectedRowColor,
-      onTap: () {
-        if (menuOkForThisUser) {
-          ManagementRepositoryClientBloc.router.navigateTo(context, path,
-              transition: TransitionType.material, params: params);
-        }
-      },
-      child: StreamBuilder<RouteChange>(
-          stream: BlocProvider.of<ManagementRepositoryClientBloc>(context)
-              .routeCurrentStream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final selected = snapshot.data.route == path &&
-                  equalsParams(snapshot.data.params);
-              return Container(
-                padding: EdgeInsets.fromLTRB(16, 12, 0, 12),
-                color: selected ? Theme.of(context).primaryColorLight : null,
-                child: Row(
-                  children: <Widget>[
-                    Icon(
-                      iconData,
-                      color: selected
-                          ? Theme.of(context).primaryColor
-                          : Color(0xff4a4a4a),
-                      size: iconSize ?? 20.0,
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.only(left: iconSize != null ? 18.0 : 24.0),
-                      child: selected
-                          ? Text(' ${name}',
-                              style: GoogleFonts.roboto(
-                                  textStyle:
-                                      Theme.of(context).textTheme.bodyText2,
-                                  fontWeight: FontWeight.w600,
-                                  color: Theme.of(context).primaryColor))
-                          : Text(' ${name}',
-                              style: Theme.of(context).textTheme.bodyText2),
-                    )
-                  ],
-                ),
-              );
-            } else {
-              return SizedBox.shrink();
-            }
-          }),
-    );
+    try {
+      final bloc = BlocProvider.of<ManagementRepositoryClientBloc>(context);
+      final menuOkForThisUser = (bloc.userIsCurrentPortfolioAdmin ||
+          permissionType == PermissionType.regular);
+      return InkWell(
+        canRequestFocus: false,
+        mouseCursor: SystemMouseCursors.click,
+        hoverColor: Theme.of(context).selectedRowColor,
+        onTap: () {
+          if (menuOkForThisUser) {
+            ManagementRepositoryClientBloc.router.navigateTo(context, path,
+                transition: TransitionType.material, params: params);
+          }
+        },
+        child: StreamBuilder<RouteChange>(
+            stream: BlocProvider.of<ManagementRepositoryClientBloc>(context)
+                .routeCurrentStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final selected = snapshot.data.route == path &&
+                    equalsParams(snapshot.data.params);
+                return Container(
+                  padding: EdgeInsets.fromLTRB(16.0, 12.0, 0.0, 12.0),
+                  color: selected ? Theme.of(context).primaryColorLight : null,
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                        iconData,
+                        color: selected
+                            ? Theme.of(context).primaryColor
+                            : Color(0xff4a4a4a),
+                        size: iconSize ?? 20.0,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: iconSize != null ? 18.0 : 24.0),
+                        child: selected
+                            ? Text(' ${name}',
+                                style: GoogleFonts.roboto(
+                                    textStyle:
+                                        Theme.of(context).textTheme.bodyText2,
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(context).primaryColor))
+                            : Text(' ${name}',
+                                style: Theme.of(context).textTheme.bodyText2),
+                      )
+                    ],
+                  ),
+                );
+              } else {
+                return SizedBox.shrink();
+              }
+            }),
+      );
+    } catch (e, s) {
+      print(e);
+      print(s);
+      return SizedBox.shrink();
+    }
   }
 }
 
