@@ -1,10 +1,9 @@
-import 'dart:html';
-
 import 'package:app_singleapp/api/client_api.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:mrapi/api.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
+import 'package:universal_html/html.dart';
 
 /// this stores the state for the setup screen
 class SetupContext extends InheritedWidget {

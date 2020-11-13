@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html';
 
 import 'package:app_singleapp/api/identity_providers.dart';
 import 'package:app_singleapp/api/router.dart';
@@ -15,6 +14,7 @@ import 'package:logging/logging.dart';
 import 'package:mrapi/api.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:universal_html/html.dart';
 
 ///
 /// This represents the state of the whole application, which starts off in 'unknown',
@@ -238,9 +238,9 @@ class ManagementRepositoryClientBloc implements Bloc {
   }
 
   ManagementRepositoryClientBloc({String basePathUrl})
-      : _client = ApiClient(basePath: basePathUrl ?? homeUrl()) {
+      : _client = ApiClient(basePath: 'http://localhost:8903') {
     _basePath = Uri.parse(_client.basePath);
-    originUri = Uri.parse(window.location.origin);
+     originUri = Uri.parse('http://localhost:8903');
     setupApi = SetupServiceApi(_client);
     personServiceApi = PersonServiceApi(_client);
 

@@ -1,7 +1,5 @@
-import 'dart:html' as html;
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_html/html.dart' as html;
 
 typedef CopyToClipboardTextProvider = Future<String> Function();
 

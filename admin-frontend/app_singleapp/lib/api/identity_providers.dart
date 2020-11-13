@@ -1,7 +1,6 @@
-import 'dart:html';
-
 import 'package:app_singleapp/api/client_api.dart';
 import 'package:mrapi/api.dart';
+import 'package:universal_html/html.dart';
 
 class IdentityProviders {
   List<String> _identityProviders = <String>['local'];
