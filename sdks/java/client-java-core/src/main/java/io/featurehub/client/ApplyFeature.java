@@ -1,15 +1,14 @@
-package io.featurehub.edge.strategies;
+package io.featurehub.client;
 
-import io.featurehub.strategies.matchers.MatcherRepository;
 import io.featurehub.sse.model.RolloutStrategy;
 import io.featurehub.sse.model.RolloutStrategyAttribute;
 import io.featurehub.sse.model.RolloutStrategyAttributeConditional;
 import io.featurehub.sse.model.RolloutStrategyFieldType;
+import io.featurehub.strategies.matchers.MatcherRepository;
 import io.featurehub.strategies.percentage.PercentageCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -22,14 +21,13 @@ public class ApplyFeature {
   private final PercentageCalculator percentageCalculator;
   private final MatcherRepository matcherRepository;
 
-  @Inject
   public ApplyFeature(PercentageCalculator percentageCalculator, MatcherRepository matcherRepository) {
     this.percentageCalculator = percentageCalculator;
     this.matcherRepository = matcherRepository;
   }
 
   public Applied applyFeature(List<RolloutStrategy> strategies, String key, String featureValueId,
-                             ClientAttributeCollection cac) {
+                              ClientContext cac) {
     if (cac != null & strategies != null && !strategies.isEmpty()) {
       Integer percentage = null;
       String percentageKey = null;
@@ -54,8 +52,8 @@ public class ApplyFeature {
 
           log.info("comparing actual {} vs required: {}", percentage, rsi.getPercentage());
           int useBasePercentage = rsi.getAttributes() == null || rsi.getAttributes().isEmpty() ? basePercentageVal : 0;
-            // if the percentage is lower than the user's key +
-            // id of feature value then apply it
+          // if the percentage is lower than the user's key +
+          // id of feature value then apply it
           if (percentage <= (useBasePercentage + rsi.getPercentage())) {
             if (rsi.getAttributes() != null && !rsi.getAttributes().isEmpty()) {
               if (matchAttributes(cac, rsi)) {
@@ -82,7 +80,7 @@ public class ApplyFeature {
   }
 
   // This applies the rules as an AND. If at any point it fails it jumps out.
-  private boolean matchAttributes(ClientAttributeCollection cac, RolloutStrategy rsi) {
+  private boolean matchAttributes(ClientContext cac, RolloutStrategy rsi) {
     for(RolloutStrategyAttribute attr : rsi.getAttributes()) {
       String suppliedValue = cac.get(attr.getFieldName(), null);
 
@@ -116,7 +114,7 @@ public class ApplyFeature {
       }
 
       // find the appropriate matcher based on type and match against the supplied value
-      if (!matcherRepository.findMatcher(attr).match(suppliedValue, attr)) {
+      if (!matcherRepository.findMatcher(suppliedValue, attr).match(suppliedValue, attr)) {
         return false;
       }
     }
@@ -124,7 +122,7 @@ public class ApplyFeature {
     return true;
   }
 
-  private String determinePercentageKey(ClientAttributeCollection cac, List<String> percentageAttributes) {
+  private String determinePercentageKey(ClientContext cac, List<String> percentageAttributes) {
     if (percentageAttributes.isEmpty()) {
       return cac.defaultPercentageKey();
     }

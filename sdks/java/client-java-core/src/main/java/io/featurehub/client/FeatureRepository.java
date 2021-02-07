@@ -9,31 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface FeatureRepository {
-
-  /*
-   * Any incoming state changes from a multi-varied set of possible data. This comes
-   * from SSE.
-   */
-  void notify(SSEResultState state, String data);
-
-  /**
-   * Indicate the feature states have updated and if their versions have
-   * updated or no versions exist, update the repository.
-   *
-   * @param states - the features
-   */
-  void notify(List<FeatureState> states);
-
-
-  /**
-   * Update the feature states and force them to be updated, ignoring their version numbers.
-   * This still may not cause events to be triggered as event triggers are done on actual value changes.
-   *
-   * @param states - the list of feature states
-   * @param force  - whether we should force the states to change
-   */
-  void notify(List<FeatureState> states, boolean force);
-
   /**
    * Changes in readyness for the repository. It can become ready and then fail if subsequent
    * calls fail.
@@ -52,6 +27,9 @@ public interface FeatureRepository {
   FeatureStateHolder getFeatureState(String key);
   FeatureStateHolder getFeatureState(Feature feature);
 
+  FeatureStateHolder getFeatureState(String key, ClientContext ctx);
+  FeatureStateHolder getFeatureState(Feature feature, ClientContext ctx);
+
   /**
    * The value of the flag/boolean feature.
    *
@@ -61,6 +39,9 @@ public interface FeatureRepository {
   boolean getFlag(String key);
   boolean getFlag(Feature feature);
 
+  boolean getFlag(String key, ClientContext ctx);
+  boolean getFlag(Feature feature, ClientContext ctx);
+
   /**
    * The value of the string feature.
    *
@@ -69,8 +50,8 @@ public interface FeatureRepository {
    */
   String getString(String key);
   String getString(Feature feature);
-
-
+  String getString(String key, ClientContext ctx);
+  String getString(Feature feature, ClientContext ctx);
 
   /**
    * The value of the number feature.
@@ -80,6 +61,8 @@ public interface FeatureRepository {
    */
   BigDecimal getNumber(String key);
   BigDecimal getNumber(Feature feature);
+  BigDecimal getNumber(String key, ClientContext ctx);
+  BigDecimal getNumber(Feature feature, ClientContext ctx);
 
   /**
    * The value of the json feature decoded into the correct class (if possible).
@@ -92,6 +75,8 @@ public interface FeatureRepository {
    */
   <T> T getJson(String key, Class<T> type);
   <T> T getJson(Feature feature, Class<T> type);
+  <T> T getJson(String key, Class<T> type, ClientContext ctx);
+  <T> T getJson(Feature feature, Class<T> type, ClientContext ctx);
 
   /**
    * The value of the json feature in string form.
@@ -101,6 +86,8 @@ public interface FeatureRepository {
    */
   String getRawJson(String key);
   String getRawJson(Feature feature);
+  String getRawJson(String key, ClientContext ctx);
+  String getRawJson(Feature feature, ClientContext ctx);
 
   /**
    * Returns whether there is a value associated with this feature. Boolean features only return false if there
@@ -111,6 +98,8 @@ public interface FeatureRepository {
    */
   boolean isSet(String key);
   boolean isSet(Feature feature);
+  boolean isSet(String key, ClientContext ctx);
+  boolean isSet(Feature feature, ClientContext ctx);
 
   /**
    * Returns whether this feature does in fact not exist.
@@ -163,5 +152,9 @@ public interface FeatureRepository {
    */
   void setJsonConfigObjectMapper(ObjectMapper jsonConfigObjectMapper);
 
+  /**
+   * global context, only relevant when using Java SDK from single identified client
+   * @return
+   */
   ClientContext clientContext();
 }
